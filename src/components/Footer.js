@@ -1,11 +1,13 @@
 import React from 'react';
 import Logo from '../icons_assets/Logo.svg';
 import { Link } from 'react-router-dom';
+import './Footer.css';
+
+
 
 const Footer = () => {
   return (
     <footer className="footer">
-      <h1>this is footer</h1>
       <div className="footer-content">
         {/* Logo Section */}
         <div className="footer-logo">

@@ -1,11 +1,13 @@
 import React from 'react'
+import './Main.css'
+import Specials from './Specials'
 
 const Main = () => {
   return (
     <main>  
-      <h1>This is main</h1>
+      <Specials />
     </main>
-
   )
 }
+
 export default Main

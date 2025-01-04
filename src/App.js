@@ -8,14 +8,21 @@ import About from './pages/About';
 import Menu from './pages/Menu';
 import OrderOnline from './pages/OrderOnline';
 import Reservations from './pages/Reservations';
+import Hero from './components/Hero';
+import CustomersSay from './components/CustomersSay';
 
 function App() {
   return (
     <Router>
       <Header/>
-      <Nav/>
       <Routes>
-        <Route path="/" element={<Main/>} />
+        <Route path="/" element={
+          <>
+            <Hero/>
+            <Main/>
+            <CustomersSay/>
+          </>
+        } />
         <Route path="/about" element={<About/>} />
         <Route path="/menu" element={<Menu/>} />
         <Route path="/order-online" element={<OrderOnline/>} />

@@ -1,9 +1,13 @@
-import React from 'react'
+import React from 'react';
+import Chicago from '../components/Chicago';
+import './About.css';
 
 const About = () => {
   return (
-    <div> Page</div>
-  )
-}
+    <main className="about-page">
+      <Chicago />
+    </main>
+  );
+};
 
-export default About
+export default About;

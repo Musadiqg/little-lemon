@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './BookingForm.css';
 
-const BookingForm = () => {
+const BookingForm = ({ availableTimes, updateTimes, submitForm }) => {
   const [formData, setFormData] = useState({
     date: '',
     time: '',
@@ -14,22 +14,65 @@ const BookingForm = () => {
     specialRequests: ''
   });
 
-  const availableTimes = [
-    '17:00', '17:30', '18:00', '18:30', '19:00', 
-    '19:30', '20:00', '20:30', '21:00', '21:30'
-  ];
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    // Update available times when date changes
+    if (name === 'date') {
+      updateTimes(value);
+    }
+
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
+  // Form validation
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.date) newErrors.date = 'Date is required';
+    if (!formData.time) newErrors.time = 'Time is required';
+    if (!formData.name) newErrors.name = 'Name is required';
+    if (!formData.email) newErrors.email = 'Email is required';
+    if (!formData.phone) newErrors.phone = 'Phone is required';
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (formData.email && !emailRegex.test(formData.email)) {
+      newErrors.email = 'Invalid email format';
+    }
+
+    // Phone validation - accept international format and local numbers
+    const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+    if (formData.phone && !phoneRegex.test(formData.phone)) {
+      newErrors.phone = 'Invalid phone number format';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Add submission logic here
+    console.log('Form submitted with data:', formData); // Debug log
+    
+    if (validateForm()) {
+      console.log('Validation passed, submitting form...');
+      submitForm(formData);
+    } else {
+      console.log('Form validation failed:', errors);
+    }
   };
 
   return (
@@ -48,6 +91,7 @@ const BookingForm = () => {
             value={formData.date}
             onChange={handleChange}
           />
+          {errors.date && <span className="error">{errors.date}</span>}
         </div>
 
         <div className="form-group">
@@ -64,6 +108,7 @@ const BookingForm = () => {
               <option key={time} value={time}>{time}</option>
             ))}
           </select>
+          {errors.time && <span className="error">{errors.time}</span>}
         </div>
 
         <div className="form-group">
@@ -124,6 +169,7 @@ const BookingForm = () => {
             value={formData.name}
             onChange={handleChange}
           />
+          {errors.name && <span className="error">{errors.name}</span>}
         </div>
 
         <div className="form-group">
@@ -136,6 +182,7 @@ const BookingForm = () => {
             value={formData.email}
             onChange={handleChange}
           />
+          {errors.email && <span className="error">{errors.email}</span>}
         </div>
 
         <div className="form-group">
@@ -147,7 +194,9 @@ const BookingForm = () => {
             required
             value={formData.phone}
             onChange={handleChange}
+            placeholder="e.g., +92 343 349 2364"
           />
+          {errors.phone && <span className="error">{errors.phone}</span>}
         </div>
 
         <div className="form-group full-width">
@@ -162,7 +211,11 @@ const BookingForm = () => {
         </div>
       </div>
 
-      <button type="submit" className="submit-button">
+      <button 
+        type="submit" 
+        className="submit-button"
+        onClick={handleSubmit}
+      >
         Reserve Table
       </button>
     </form>
